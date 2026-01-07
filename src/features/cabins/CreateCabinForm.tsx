@@ -77,10 +77,12 @@ function CreateCabinForm() {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button variation="secondary" size="medium" type="reset">
           Cancel
         </Button>
-        <Button>Edit cabin</Button>
+        <Button variation="primary" size="medium">
+          Edit cabin
+        </Button>
       </FormRow>
     </Form>
   );

@@ -51,7 +51,6 @@ const variations = {
 interface ButtonProps {
   variation: "primary" | "secondary" | "danger";
   size: "small" | "medium" | "large";
-  onClick: () => void;
 }
 
 const Button = styled.button<ButtonProps>`
