@@ -21,7 +21,7 @@ function Cabins() {
           variation="primary"
           size="medium"
         >
-          Add New Cabin
+          {showForm ? "Close Form" : "Add New Cabin"}
         </Button>
         {showForm && <CreateCabinForm />}
       </Row>
