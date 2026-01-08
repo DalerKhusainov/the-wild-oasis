@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createCabin } from "../../services/apiCabins";
+import { toast } from "react-hot-toast";
 
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
@@ -49,20 +52,38 @@ interface AddCabinFormInputsTypes {
   regularPrice: number;
   discount: number;
   description: string;
+  image: string;
 }
 
 function CreateCabinForm() {
-  const { register, handleSubmit } = useForm<AddCabinFormInputsTypes>({
+  const { register, handleSubmit, reset } = useForm<AddCabinFormInputsTypes>({
     defaultValues: {
       name: "",
       maxCapacity: 0,
       regularPrice: 0,
       discount: 0,
+      image: "",
+    },
+  });
+
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending: isCreating } = useMutation({
+    // mutationFn: (newCabin) => createCabin(newCabin),
+    mutationFn: createCabin,
+    onSuccess: () => {
+      toast.success("New cabin successfully created");
+      queryClient.invalidateQueries({ queryKey: ["cabins"] });
+      reset();
+    },
+    onError: (err: any) => {
+      toast.error(err.message);
     },
   });
 
   const onSubmit: SubmitHandler<AddCabinFormInputsTypes> = (data) => {
     console.log(data);
+    mutate(data);
   };
 
   return (
@@ -103,7 +124,8 @@ function CreateCabinForm() {
 
       <FormRow>
         <Label htmlFor="image">Cabin photo</Label>
-        <FileInput id="image" accept="image/*" />
+        {/* <FileInput id="image" accept="image/*" /> */}
+        <Input type="text" id="image" {...register("image")} />
       </FormRow>
 
       <FormRow>
@@ -111,8 +133,8 @@ function CreateCabinForm() {
         <Button variation="secondary" size="medium" type="reset">
           Cancel
         </Button>
-        <Button variation="primary" size="medium">
-          Add Cabin
+        <Button disabled={isCreating} variation="primary" size="medium">
+          {isCreating ? "Creating" : "Add Cabin"}
         </Button>
       </FormRow>
     </Form>

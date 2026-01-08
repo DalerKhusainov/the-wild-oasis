@@ -1,4 +1,5 @@
 import supabase from "./supabase";
+import type { CabinType } from "../types/cabinTypes";
 
 export async function getCabins() {
   const { data, error } = await supabase.from("cabins").select("*");
@@ -6,6 +7,20 @@ export async function getCabins() {
   if (error) {
     console.log(error);
     throw new Error("Cabins could not be loaded");
+  }
+
+  return data;
+}
+
+export async function createCabin(newCabin: CabinType) {
+  const { data, error } = await supabase
+    .from("cabins")
+    .insert([newCabin])
+    .select();
+
+  if (error) {
+    console.log(error);
+    throw new Error("Cabin could not be created");
   }
 
   return data;
