@@ -8,5 +8,5 @@ export type CabinType = {
   regularPrice: number;
   discount: number;
   description: string;
-  image: null | string;
+  image: File;
 };

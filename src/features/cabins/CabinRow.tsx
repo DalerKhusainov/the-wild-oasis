@@ -57,8 +57,6 @@ export default function CabinRow({ cabin }: CabinRow) {
     image,
   } = cabin;
 
-  console.log("Cabin: ", cabin);
-
   const queryClient = useQueryClient();
 
   const { isPending: isDeleting, mutate } = useMutation({
