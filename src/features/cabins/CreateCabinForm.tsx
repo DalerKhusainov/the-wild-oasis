@@ -2,8 +2,9 @@ import styled from "styled-components";
 import { useForm, SubmitHandler } from "react-hook-form";
 // import { SubmitErrorHandler } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createCabin } from "../../services/apiCabins";
+import { createEditCabin } from "../../services/apiCabins";
 import { toast } from "react-hot-toast";
+import type { AddCabinFormInputsTypes } from "../../types/cabinTypes";
 
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
@@ -39,15 +40,6 @@ const FormButtonRow = styled.div`
   }
 `;
 
-export interface AddCabinFormInputsTypes {
-  name: string;
-  maxCapacity: number;
-  regularPrice: number;
-  discount: number;
-  description: string;
-  image: FileList;
-}
-
 function CreateCabinForm() {
   const {
     register,
@@ -61,7 +53,7 @@ function CreateCabinForm() {
 
   const { mutate, isPending: isCreating } = useMutation({
     // mutationFn: (newCabin) => createCabin(newCabin),
-    mutationFn: createCabin,
+    mutationFn: createEditCabin,
     onSuccess: () => {
       toast.success("New cabin successfully created");
       queryClient.invalidateQueries({ queryKey: ["cabins"] });

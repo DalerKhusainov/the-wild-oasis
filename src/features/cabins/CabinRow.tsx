@@ -100,7 +100,7 @@ export default function CabinRow({ cabin }: CabinRow) {
       )}
       {showUpdateForm && (
         <UpdateCabinForm
-          cabin={cabin}
+          cabinToEdit={cabin}
           onShowUpdateFormHandler={showUpdateFormHandler}
         />
       )}

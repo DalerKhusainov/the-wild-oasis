@@ -9,7 +9,7 @@ export type CabinType = {
   regularPrice: number;
   discount: number;
   description: string;
-  image: File;
+  image: string | File;
 };
 
 export type CabinFromApiType = {
@@ -22,3 +22,21 @@ export type CabinFromApiType = {
   description: string;
   image: string;
 };
+
+export interface AddCabinFormInputsTypes {
+  name: string;
+  maxCapacity: number;
+  regularPrice: number;
+  discount: number;
+  description: string;
+  image: FileList;
+}
+
+export interface UpdateCabinFormInputsTypes {
+  name: string;
+  maxCapacity: number;
+  regularPrice: number;
+  discount: number;
+  description: string;
+  image: FileList | string;
+}
