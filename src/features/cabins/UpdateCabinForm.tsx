@@ -1,17 +1,15 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { styled } from "styled-components";
+import { useEditCabin } from "./useEditCabin";
 import type {
   CabinFromApiType,
   UpdateCabinFormInputsTypes,
-  CabinType,
 } from "../../types/cabinTypes";
-import { toast } from "react-hot-toast";
+
 import FileInput from "../../ui/FileInput";
 import Input from "../../ui/Input";
 import Textarea from "../../ui/Textarea";
 import Button from "../../ui/Button";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createEditCabin } from "../../services/apiCabins";
 
 const Container = styled.div`
   display: flex;
@@ -69,6 +67,7 @@ export default function UpdateCabinForm({
   cabinToEdit,
   onShowUpdateFormHandler,
 }: UpdateCabinFormProps) {
+  const { editCabin, isEditing } = useEditCabin();
   const { id: editId, ...editValues } = cabinToEdit;
   const isEditSession = Boolean(editId);
 
@@ -76,7 +75,6 @@ export default function UpdateCabinForm({
     register,
     handleSubmit,
     reset,
-    getValues,
     formState: { errors },
   } = useForm<UpdateCabinFormInputsTypes>({
     defaultValues: {
@@ -89,21 +87,30 @@ export default function UpdateCabinForm({
     },
   });
 
-  const queryClient = useQueryClient();
-  const { mutate, isPending: isEditing } = useMutation({
-    mutationFn: ({ newCabin, id }: { newCabin: CabinType; id: number }) =>
-      createEditCabin(newCabin, id),
-    onSuccess: () => {
-      toast.success("Cabin successfully edited");
-      queryClient.invalidateQueries({ queryKey: ["cabins"] });
-      reset();
-      onShowUpdateFormHandler();
-    },
-  });
+  // const queryClient = useQueryClient();
+  // const { mutate, isPending: isEditing } = useMutation({
+  //   mutationFn: ({ newCabin, id }: { newCabin: CabinType; id: number }) =>
+  //     createEditCabin(newCabin, id),
+  //   onSuccess: () => {
+  //     toast.success("Cabin successfully edited");
+  //     queryClient.invalidateQueries({ queryKey: ["cabins"] });
+  //     reset();
+  //     onShowUpdateFormHandler();
+  //   },
+  // });
 
   const onSubmit: SubmitHandler<UpdateCabinFormInputsTypes> = (data) => {
     const image = typeof data.image === "string" ? data.image : data.image[0];
-    mutate({ newCabin: { ...data, image }, id: editId });
+    editCabin(
+      { newCabin: { ...data, image }, id: editId },
+      {
+        onSuccess: (data) => {
+          console.log(data);
+          reset();
+          onShowUpdateFormHandler();
+        },
+      }
+    );
   };
 
   return (
@@ -118,7 +125,7 @@ export default function UpdateCabinForm({
             disabled={isEditing}
             {...register("name", { required: "This field is required" })}
           />
-          {/* <Error>Error text</Error>           */}
+          {errors && <Error>{errors.name?.message}</Error>}
         </FormRow>
         <FormRow>
           <Label htmlFor="maxCapacity">Maximum capacity</Label>
@@ -128,7 +135,7 @@ export default function UpdateCabinForm({
             disabled={isEditing}
             {...register("maxCapacity", { required: "This field is required" })}
           />
-          {/* <Error>Error text</Error>           */}
+          {errors && <Error>{errors.maxCapacity?.message}</Error>}
         </FormRow>
         <FormRow>
           <Label htmlFor="regularPrice">Regular price</Label>
@@ -140,7 +147,7 @@ export default function UpdateCabinForm({
               required: "This field is required",
             })}
           />
-          {/* <Error>Error text</Error>           */}
+          {errors && <Error>{errors.regularPrice?.message}</Error>}
         </FormRow>
         <FormRow>
           <Label htmlFor="discount">Discount</Label>
@@ -150,7 +157,7 @@ export default function UpdateCabinForm({
             disabled={isEditing}
             {...register("discount", { required: "This field is required" })}
           />
-          {/* <Error>Error text</Error>           */}
+          {errors && <Error>{errors.discount?.message}</Error>}
         </FormRow>
         <FormRow>
           <Label htmlFor="description">Description for website</Label>
@@ -159,7 +166,7 @@ export default function UpdateCabinForm({
             disabled={isEditing}
             {...register("description", { required: "This field is required" })}
           />
-          {/* <Error>Error text</Error>           */}
+          {errors && <Error>{errors.description?.message}</Error>}
         </FormRow>
         <FormRow>
           <Label htmlFor="image">Cabin photo</Label>
@@ -171,7 +178,7 @@ export default function UpdateCabinForm({
               required: isEditSession ? false : "This field is required",
             })}
           />
-          {/* <Error>Error text</Error>           */}
+          {errors && <Error>{errors.image?.message}</Error>}
         </FormRow>
         <ButtonsBox>
           <Button
