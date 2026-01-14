@@ -1,8 +1,13 @@
 import { useState } from "react";
 import styled from "styled-components";
 import UpdateCabinForm from "./UpdateCabinForm";
-import { formatCurrency } from "../../utils/helpers";
 import { useDeleteCabin } from "./useDeleteCabin";
+import { useCreateCabin } from "./useCreateCabin";
+import type { CabinType, CabinFromApiType } from "../../types/cabinTypes";
+import { formatCurrency } from "../../utils/helpers";
+import { HiSquare2Stack } from "react-icons/hi2";
+import { HiPencil } from "react-icons/hi";
+import { MdDeleteForever } from "react-icons/md";
 
 const TableRow = styled.div`
   display: grid;
@@ -43,13 +48,14 @@ const Discount = styled.div`
   color: var(--color-green-700);
 `;
 
-interface CabinRow {
-  cabin: any;
+interface CabinRowProps {
+  cabin: CabinFromApiType;
 }
 
-export default function CabinRow({ cabin }: CabinRow) {
+export default function CabinRow({ cabin }: CabinRowProps) {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const { isDeleting, deleteCabin } = useDeleteCabin();
+  const { isCreating, createCabin } = useCreateCabin();
 
   const {
     id: cabinId,
@@ -58,7 +64,19 @@ export default function CabinRow({ cabin }: CabinRow) {
     regularPrice,
     discount,
     image,
+    description,
   } = cabin;
+
+  function handleDuplicate() {
+    createCabin({
+      name: `Copy of ${name}`,
+      maxCapacity,
+      regularPrice,
+      discount,
+      image,
+      description,
+    });
+  }
 
   function showUpdateFormHandler() {
     setShowUpdateForm((show) => !show);
@@ -78,9 +96,14 @@ export default function CabinRow({ cabin }: CabinRow) {
             <span>&mdash;</span>
           )}
           <div>
-            <button onClick={showUpdateFormHandler}>Edit</button>
+            <button onClick={handleDuplicate} disabled={isCreating}>
+              <HiSquare2Stack />
+            </button>
+            <button onClick={showUpdateFormHandler}>
+              <HiPencil />
+            </button>
             <button onClick={() => deleteCabin(cabinId)} disabled={isDeleting}>
-              {isDeleting ? "Deleting" : "Delete"}
+              <MdDeleteForever />
             </button>
           </div>
         </TableRow>
