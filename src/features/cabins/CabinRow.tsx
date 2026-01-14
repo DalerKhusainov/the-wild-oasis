@@ -3,7 +3,7 @@ import styled from "styled-components";
 import UpdateCabinForm from "./UpdateCabinForm";
 import { useDeleteCabin } from "./useDeleteCabin";
 import { useCreateCabin } from "./useCreateCabin";
-import type { CabinType, CabinFromApiType } from "../../types/cabinTypes";
+import type { CabinFromApiType } from "../../types/cabinTypes";
 import { formatCurrency } from "../../utils/helpers";
 import { HiSquare2Stack } from "react-icons/hi2";
 import { HiPencil } from "react-icons/hi";
