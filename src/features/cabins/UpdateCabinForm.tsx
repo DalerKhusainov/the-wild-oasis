@@ -1,6 +1,6 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { styled } from "styled-components";
-import { useEditCabin } from "./useEditCabin";
+import { useUpdateCabin } from "./useUpdateCabin";
 import type {
   CabinFromApiType,
   UpdateCabinFormInputsTypes,
@@ -67,7 +67,7 @@ export default function UpdateCabinForm({
   cabinToEdit,
   onShowUpdateFormHandler,
 }: UpdateCabinFormProps) {
-  const { editCabin, isEditing } = useEditCabin();
+  const { editCabin, isEditing } = useUpdateCabin();
   const { id: editId, ...editValues } = cabinToEdit;
   const isEditSession = Boolean(editId);
 

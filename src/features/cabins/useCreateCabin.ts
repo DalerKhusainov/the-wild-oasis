@@ -13,8 +13,8 @@ export function useCreateCabin() {
       queryClient.invalidateQueries({ queryKey: ["cabins"] });
       //   reset();
     },
-    onError: (err: any) => {
-      toast.error(err.message);
+    onError: (err) => {
+      if (err instanceof Error) toast.error(err.message);
     },
   });
 

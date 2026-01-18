@@ -1,5 +1,5 @@
 import Heading from "../ui/Heading";
-import UpdateSettingsForm from "../features/settings/UpdateSettingsForm";
+import UpdateSettingsForm from "../features/setting/UpdateSettingForm";
 import Row from "../ui/Row";
 
 function Settings() {

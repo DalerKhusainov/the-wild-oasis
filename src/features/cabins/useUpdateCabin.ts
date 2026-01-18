@@ -3,8 +3,9 @@ import { createEditCabin } from "../../services/apiCabins";
 import { CabinType } from "../../types/cabinTypes";
 import { toast } from "react-hot-toast";
 
-export function useEditCabin() {
+export function useUpdateCabin() {
   const queryClient = useQueryClient();
+
   const { mutate: editCabin, isPending: isEditing } = useMutation({
     mutationFn: ({ newCabin, id }: { newCabin: CabinType; id: number }) =>
       createEditCabin(newCabin, id),
@@ -13,6 +14,9 @@ export function useEditCabin() {
       queryClient.invalidateQueries({ queryKey: ["cabins"] });
       //   reset();
       //   onShowUpdateFormHandler();
+    },
+    onError: (err) => {
+      if (err instanceof Error) toast.error(err.message);
     },
   });
 
