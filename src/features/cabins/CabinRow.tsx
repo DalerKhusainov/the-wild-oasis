@@ -94,12 +94,12 @@ export default function CabinRow({ cabin }: CabinRowProps) {
           <HiSquare2Stack />
         </button>
         <Modal>
-          <Modal.Open opens="edit">
+          <Modal.Open opens="edit-cabin">
             <button>
               <HiPencil />
             </button>
           </Modal.Open>
-          <Modal.Window name="edit">
+          <Modal.Window name="edit-cabin">
             <UpdateCabinForm cabinToEdit={cabin} />
           </Modal.Window>
 
