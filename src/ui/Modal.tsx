@@ -76,7 +76,7 @@ interface WindowProps {
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
-function useModal() {
+export function useModal() {
   const context = useContext(ModalContext);
   if (!context)
     throw new Error("useModal must be used within a Modal component");

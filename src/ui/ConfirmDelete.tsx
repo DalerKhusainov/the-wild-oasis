@@ -1,3 +1,4 @@
+import { useModal } from "./Modal";
 import styled from "styled-components";
 import Button from "./Button";
 import Heading from "./Heading";
@@ -20,7 +21,19 @@ const StyledConfirmDelete = styled.div`
   }
 `;
 
-function ConfirmDelete({ resourceName, onConfirm, disabled }) {
+interface ConfirmDeleteProps {
+  resourceName: string;
+  onConfirm: () => void;
+  disabled: boolean;
+}
+
+function ConfirmDelete({
+  resourceName,
+  onConfirm,
+  disabled,
+}: ConfirmDeleteProps) {
+  const { closeModal } = useModal();
+
   return (
     <StyledConfirmDelete>
       <Heading as="h3">Delete {resourceName}</Heading>
@@ -30,11 +43,21 @@ function ConfirmDelete({ resourceName, onConfirm, disabled }) {
       </p>
 
       <div>
-        <Button variation="secondary" disabled={disabled}>
+        <Button
+          variation="secondary"
+          size="medium"
+          disabled={disabled}
+          onClick={closeModal}
+        >
           Cancel
         </Button>
-        <Button variation="danger" disabled={disabled}>
-          Delete
+        <Button
+          variation="danger"
+          size="medium"
+          disabled={disabled}
+          onClick={onConfirm}
+        >
+          {disabled ? "Deleting" : "Delete"}
         </Button>
       </div>
     </StyledConfirmDelete>

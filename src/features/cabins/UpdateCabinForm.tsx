@@ -1,6 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { styled } from "styled-components";
 import { useUpdateCabin } from "./useUpdateCabin";
+import { useModal } from "../../ui/Modal";
 import type {
   CabinFromApiType,
   UpdateCabinFormInputsTypes,
@@ -60,16 +61,14 @@ const Error = styled.span`
 
 interface UpdateCabinFormProps {
   cabinToEdit: CabinFromApiType;
-  onShowUpdateFormHandler: () => void;
 }
 
-export default function UpdateCabinForm({
-  cabinToEdit,
-  onShowUpdateFormHandler,
-}: UpdateCabinFormProps) {
+export default function UpdateCabinForm({ cabinToEdit }: UpdateCabinFormProps) {
   const { editCabin, isEditing } = useUpdateCabin();
   const { id: editId, ...editValues } = cabinToEdit;
   const isEditSession = Boolean(editId);
+
+  const { closeModal } = useModal();
 
   const {
     register,
@@ -107,7 +106,7 @@ export default function UpdateCabinForm({
         onSuccess: (data) => {
           console.log(data);
           reset();
-          onShowUpdateFormHandler();
+          closeModal();
         },
       }
     );
@@ -181,12 +180,7 @@ export default function UpdateCabinForm({
           {errors && <Error>{errors.image?.message}</Error>}
         </FormRow>
         <ButtonsBox>
-          <Button
-            variation="secondary"
-            size="medium"
-            type="reset"
-            onClick={onShowUpdateFormHandler}
-          >
+          <Button variation="secondary" size="medium" type="reset">
             Cancel
           </Button>
           <Button disabled={isEditing} variation="primary" size="medium">
