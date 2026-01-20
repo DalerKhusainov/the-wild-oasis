@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, cloneElement } from "react";
 import type { ReactNode, ReactElement } from "react";
+import { useCloseOnEscapeAndOutsideClick } from "../hooks/useCloseOnEscapeAndOutsideClick";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
 import { HiXMark } from "react-icons/hi2";
@@ -102,12 +103,13 @@ function Open({ children, opens: opensWindowName }: OpenProps) {
 
 function Window({ children, name }: WindowProps) {
   const { openName, closeModal } = useModal();
+  const ref = useCloseOnEscapeAndOutsideClick(closeModal);
 
   if (name !== openName) return null;
 
   return createPortal(
     <Overlay>
-      <StyledModal>
+      <StyledModal ref={ref}>
         <Button onClick={closeModal}>
           <HiXMark />
         </Button>
