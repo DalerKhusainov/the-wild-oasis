@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Spinner from "../../ui/Spinner";
 import CabinRow from "./CabinRow";
 import Table from "../../ui/Table";
+import type { CabinFromApiType } from "../../types/cabinTypes";
 // const Table = styled.div`
 //   border: 1px solid var(--color-grey-200);
 
@@ -42,9 +43,11 @@ function CabinTable() {
         <div>Discount</div>
         <div></div>
       </Table.Header>
-      {cabins?.map((cabin) => (
-        <CabinRow key={cabin.id} cabin={cabin} />
-      ))}
+
+      <Table.Body<CabinFromApiType>
+        data={cabins}
+        render={(cabin) => <CabinRow key={cabin.id} cabin={cabin} />}
+      />
     </Table>
   );
 }

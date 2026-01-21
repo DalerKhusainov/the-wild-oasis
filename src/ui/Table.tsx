@@ -22,8 +22,9 @@ interface RowProps {
   children: ReactNode;
 }
 
-interface BodyProps {
-  chidlren: ReactNode;
+interface BodyProps<T> {
+  data: T[] | undefined;
+  render: (item: T) => ReactNode;
 }
 
 const StyledTable = styled.div`
@@ -120,8 +121,9 @@ function Row({ children }: RowProps) {
   );
 }
 
-function Body({ chidlren }: BodyProps) {
-  return chidlren;
+function Body<T>({ data, render }: BodyProps<T>) {
+  if (!data) return <Empty>No data to show at the moment</Empty>;
+  return <StyledBody>{data.map(render)}</StyledBody>;
 }
 
 Table.Header = Header;
