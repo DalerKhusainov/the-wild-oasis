@@ -4,7 +4,7 @@ export function useCloseOnEscapeAndOutsideClick(
   handler: () => void,
   listenCapturing: boolean = true
 ) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement | HTMLUListElement>(null);
 
   useEffect(
     function () {

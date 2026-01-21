@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, cloneElement } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  cloneElement,
+  type Ref,
+} from "react";
 import type { ReactNode, ReactElement } from "react";
 import { useCloseOnEscapeAndOutsideClick } from "../hooks/useCloseOnEscapeAndOutsideClick";
 import { createPortal } from "react-dom";
@@ -109,7 +115,7 @@ function Window({ children, name }: WindowProps) {
 
   return createPortal(
     <Overlay>
-      <StyledModal ref={ref}>
+      <StyledModal ref={ref as Ref<HTMLDivElement>}>
         <Button onClick={closeModal}>
           <HiXMark />
         </Button>
