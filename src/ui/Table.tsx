@@ -1,4 +1,30 @@
+import { createContext, useContext, type ReactNode } from "react";
 import styled from "styled-components";
+
+interface CommonRowProps {
+  columns: string;
+}
+
+interface TableContextType {
+  columns: string;
+}
+
+interface TableProps {
+  children: ReactNode;
+  columns: string;
+}
+
+interface HeaderProps {
+  children: ReactNode;
+}
+
+interface RowProps {
+  children: ReactNode;
+}
+
+interface BodyProps {
+  chidlren: ReactNode;
+}
 
 const StyledTable = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -8,10 +34,6 @@ const StyledTable = styled.div`
   border-radius: 7px;
   overflow: hidden;
 `;
-
-interface CommonRowProps {
-  columns: number
-}
 
 const CommonRow = styled.div<CommonRowProps>`
   display: grid;
@@ -62,3 +84,49 @@ const Empty = styled.p`
   text-align: center;
   margin: 2.4rem;
 `;
+
+const TableContext = createContext<TableContextType | undefined>(undefined);
+
+function useTable() {
+  const tableContext = useContext(TableContext);
+  if (!tableContext)
+    throw new Error("useTable must be used within TableProvider");
+  return tableContext;
+}
+
+function Table({ children, columns }: TableProps) {
+  return (
+    <TableContext.Provider value={{ columns }}>
+      <StyledTable role="table">{children}</StyledTable>
+    </TableContext.Provider>
+  );
+}
+
+function Header({ children }: HeaderProps) {
+  const { columns } = useTable();
+  return (
+    <StyledHeader role="row" columns={columns} as="header">
+      {children}
+    </StyledHeader>
+  );
+}
+
+function Row({ children }: RowProps) {
+  const { columns } = useTable();
+  return (
+    <StyledRow role="row" columns={columns}>
+      {children}
+    </StyledRow>
+  );
+}
+
+function Body({ chidlren }: BodyProps) {
+  return chidlren;
+}
+
+Table.Header = Header;
+Table.Row = Row;
+Table.Body = Body;
+Table.Footer = Footer;
+
+export default Table;
