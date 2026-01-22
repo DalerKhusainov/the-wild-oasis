@@ -1,3 +1,4 @@
+import { useSearchParams } from "react-router-dom";
 import { useFetchCabins } from "./useFetchCabins";
 import type { CabinFromApiType } from "../../types/cabinTypes";
 import Spinner from "../../ui/Spinner";
@@ -7,8 +8,22 @@ import Menus from "../../ui/Menus";
 
 function CabinTable() {
   const { isLoading, cabins } = useFetchCabins();
+  const [searchParams] = useSearchParams();
 
   if (isLoading) return <Spinner />;
+
+  const filterValue = searchParams.get("discount") || "all";
+
+  let filteredCabins;
+  if (filterValue === "all") filteredCabins = cabins;
+  if (filterValue === "no-discount")
+    filteredCabins = cabins?.filter(
+      (cabin: CabinFromApiType) => cabin.discount === 0
+    );
+  if (filterValue === "with-discount")
+    filteredCabins = cabins?.filter(
+      (cabin: CabinFromApiType) => cabin.discount > 0
+    );
 
   return (
     <Menus>
@@ -23,7 +38,7 @@ function CabinTable() {
         </Table.Header>
 
         <Table.Body<CabinFromApiType>
-          data={cabins}
+          data={filteredCabins}
           render={(cabin) => <CabinRow key={cabin.id} cabin={cabin} />}
         />
       </Table>
