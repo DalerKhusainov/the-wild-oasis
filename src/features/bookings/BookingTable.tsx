@@ -1,9 +1,5 @@
-import type {
-  BookingsFromApiType,
-  BookingFromApiType,
-} from "../../types/bookingsTypes";
+import type { BookingFromApiType } from "../../types/bookingsTypes";
 import { useBookings } from "./useBookings";
-
 import BookingRow from "./BookingRow";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
@@ -11,57 +7,10 @@ import Empty from "../../ui/Empty";
 import Spinner from "../../ui/Spinner";
 
 function BookingTable() {
-  // const bookings: BookingsFromApiType = [
-  //   {
-  //     id: 1,
-  //     created_at: "",
-  //     startDate: "",
-  //     endDate: "",
-  //     numNights: 3,
-  //     numGuests: 4,
-  //     cabinPrice: 500,
-  //     extrasPrice: 100,
-  //     totalPrice: 600,
-  //     status: "",
-  //     hasBreakfast: true,
-  //     isPaid: true,
-  //     observations: "unconfirmed",
-  //     cabinID: 4,
-  //     guestID: 6,
-  //   },
-  //   {
-  //     id: 2,
-  //     created_at: "",
-  //     startDate: "",
-  //     endDate: "",
-  //     numNights: 3,
-  //     numGuests: 4,
-  //     cabinPrice: 500,
-  //     extrasPrice: 100,
-  //     totalPrice: 600,
-  //     status: "",
-  //     hasBreakfast: true,
-  //     isPaid: true,
-  //     observations: "unconfirmed",
-  //     cabinID: 4,
-  //     guestID: 6,
-  //   },
-  // ];
-
-  const { isLoading, bookings, error } = useBookings();
+  const { isLoading, bookings } = useBookings();
 
   if (isLoading) return <Spinner />;
   if (!bookings?.length) return <Empty resourceName="bookings" />;
-
-  console.log();
-
-  // const testBooking = bookings.map((booking) => ({
-  //   ...booking,
-  //   cabinName: [...booking.cabins],
-  //   guest: [...booking.guests],
-  // }));
-
-  // console.log(testBooking);
 
   return (
     <Menus>
