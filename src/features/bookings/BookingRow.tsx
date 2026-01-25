@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import type { BookingFromApiType } from "../../types/bookingsTypes";
 import { format, isToday } from "date-fns";
 
 import Tag from "../../ui/Tag";
@@ -34,6 +35,8 @@ const Amount = styled.div`
   font-weight: 500;
 `;
 
+type StatusKey = "unconfirmed" | "checked-in" | "checked-out";
+
 function BookingRow({
   booking: {
     id: bookingId,
@@ -44,9 +47,11 @@ function BookingRow({
     numGuests,
     totalPrice,
     status,
-    guests: { fullName: guestName, email },
+    guests: { fullName: guestName, email: guestEmail },
     cabins: { name: cabinName },
   },
+}: {
+  booking: BookingFromApiType;
 }) {
   const statusToTagName = {
     unconfirmed: "blue",
@@ -60,7 +65,7 @@ function BookingRow({
 
       <Stacked>
         <span>{guestName}</span>
-        <span>{email}</span>
+        <span>{guestEmail}</span>
       </Stacked>
 
       <Stacked>
@@ -76,7 +81,9 @@ function BookingRow({
         </span>
       </Stacked>
 
-      <Tag type={statusToTagName[status]}>{status.replace("-", " ")}</Tag>
+      <Tag type={statusToTagName[status as StatusKey]}>
+        {status.replace("-", " ")}
+      </Tag>
 
       <Amount>{formatCurrency(totalPrice)}</Amount>
     </Table.Row>
