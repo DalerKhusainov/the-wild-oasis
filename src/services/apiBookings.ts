@@ -1,12 +1,60 @@
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
-export async function getBookings() {
-  const { data, error } = await supabase
+type FilterMethod =
+  | "eq"
+  | "neq"
+  | "gt"
+  | "gte"
+  | "lt"
+  | "lte"
+  | "like"
+  | "ilike"
+  | "in"
+  | "is"
+  | "fts"
+  | "plfts"
+  | "phfts"
+  | "wfts";
+
+interface BookingFilterType {
+  field: string;
+  value: string | number;
+  method: FilterMethod | null;
+}
+
+export async function getBookings({
+  filter,
+  sortBy,
+}: {
+  filter: BookingFilterType | null;
+  sortBy: string | null;
+}) {
+  let query = supabase
     .from("bookings")
     .select(
       "id, created_at, startDate, endDate, numNights, numGuests, status, totalPrice, cabins(name), guests(fullName, email)"
     );
+
+  // FILTER
+  if (filter !== null && filter.method) {
+    // query = query.eq(filter.field, filter.value);
+    // query = query[filter.method || "eq"](filter.field, filter.value);
+
+    const { field, value, method } = filter;
+    switch (method) {
+      case "eq":
+        query = query.eq(field, value);
+        break;
+      case "gte":
+        query = query.gte(field, value);
+        break;
+      default:
+        query = query.eq(field, value);
+    }
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     console.error(error);
