@@ -23,12 +23,17 @@ interface BookingFilterType {
   method: FilterMethod | null;
 }
 
+interface BookingSortByType {
+  field: string;
+  direction: string;
+}
+
 export async function getBookings({
   filter,
   sortBy,
 }: {
   filter: BookingFilterType | null;
-  sortBy: string | null;
+  sortBy: BookingSortByType | null;
 }) {
   let query = supabase
     .from("bookings")
@@ -52,6 +57,12 @@ export async function getBookings({
       default:
         query = query.eq(field, value);
     }
+  }
+
+  if (sortBy) {
+    query = query.order(sortBy.field, {
+      ascending: sortBy.direction === "asc",
+    });
   }
 
   const { data, error } = await query;
