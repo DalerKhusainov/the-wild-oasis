@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { useSearchParams } from "react-router-dom";
+import { PAGE_SIZE } from "../utils/constants";
 
 const StyledPagination = styled.div`
   width: 100%;
@@ -23,7 +24,7 @@ const Buttons = styled.div`
   gap: 0.6rem;
 `;
 
-const PaginationButton = styled.button<{ active: boolean }>`
+const PaginationButton = styled.button<{ active?: boolean }>`
   background-color: ${(props) =>
     props.active ? " var(--color-brand-600)" : "var(--color-grey-50)"};
   color: ${(props) => (props.active ? " var(--color-brand-50)" : "inherit")};
@@ -57,8 +58,6 @@ const PaginationButton = styled.button<{ active: boolean }>`
     color: var(--color-brand-50);
   }
 `;
-
-const PAGE_SIZE = 10;
 
 function Pagination({ count }: { count: number }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -94,14 +93,14 @@ function Pagination({ count }: { count: number }) {
 
       <Buttons>
         <PaginationButton
-          active={true}
+          // active={true}
           disabled={currentPage === 1}
           onClick={prevPage}
         >
           <HiChevronLeft /> <span>Previous</span>
         </PaginationButton>
         <PaginationButton
-          active={false}
+          // active={false}
           disabled={currentPage === pageCount}
           onClick={nextPage}
         >

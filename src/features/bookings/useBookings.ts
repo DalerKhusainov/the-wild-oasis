@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getBookings } from "../../services/apiBookings";
 import { useSearchParams } from "react-router-dom";
+import type { BookingsResponse } from "../../services/apiBookings";
 
 type FilterMethod =
   | "eq"
@@ -33,14 +34,18 @@ export function useBookings() {
   const [field, direction] = sortByRaw.split("-");
   const sortBy = { field, direction };
 
-  const {
-    isLoading,
-    data: bookings,
-    error,
-  } = useQuery({
-    queryKey: ["bookings", filter, sortBy],
-    queryFn: () => getBookings({ filter, sortBy }),
+  // PAGINATION
+  const page = !searchParams.get("page") ? 1 : Number(searchParams.get("page"));
+
+  const { isLoading, data, error } = useQuery<BookingsResponse>({
+    queryKey: ["bookings", filter, sortBy, page],
+    queryFn: () => getBookings({ filter, sortBy, page }),
   });
 
-  return { isLoading, bookings, error };
+  return {
+    isLoading,
+    bookings: data?.transformedData || [],
+    error,
+    count: data?.count || 0,
+  };
 }
