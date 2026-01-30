@@ -107,7 +107,7 @@ export async function getBookings({
   return { transformedData, count };
 }
 
-export async function getBooking(id: any) {
+export async function getBooking(id: number) {
   const { data, error } = await supabase
     .from("bookings")
     .select("*, cabins(*), guests(*)")
