@@ -1,5 +1,6 @@
 import supabase, { supabaseUrl } from "./supabase";
 import type { CabinType } from "../types/cabinTypes";
+
 export async function getCabins() {
   const { data, error } = await supabase.from("cabins").select("*");
 

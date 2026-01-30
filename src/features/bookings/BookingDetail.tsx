@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import BookingDataBox from "./BookingDataBox";
@@ -22,10 +23,14 @@ type StatusKey = "unconfirmed" | "checked-in" | "checked-out";
 
 function BookingDetail() {
   const { isLoading, booking } = useBooking();
-
-  const { status, id: bookingId } = booking;
+  const navigate = useNavigate();
+  // const { status, id: bookingId } = booking;
 
   const moveBack = useMoveBack();
+
+  if (isLoading) return <Spinner />;
+  console.log(booking);
+  console.log(booking.status);
 
   const statusToTagName = {
     unconfirmed: "blue",
@@ -33,15 +38,13 @@ function BookingDetail() {
     "checked-out": "silver",
   };
 
-  if (isLoading) return <Spinner />;
-
   return (
     <>
       <Row type="horizontal">
         <HeadingGroup>
-          <Heading as="h1">Booking #{bookingId}</Heading>
-          <Tag type={statusToTagName[status as StatusKey]}>
-            {status.replace("-", " ")}
+          {/* <Heading as="h1">Booking #{bookingId}</Heading> */}
+          <Tag type={statusToTagName[booking?.status as StatusKey]}>
+            {booking.status.replace("-", " ")}
           </Tag>
         </HeadingGroup>
         <ButtonText onClick={moveBack}>&larr; Back</ButtonText>
@@ -50,6 +53,16 @@ function BookingDetail() {
       <BookingDataBox booking={booking} />
 
       <ButtonGroup>
+        {booking?.status === "unconfirmed" && (
+          <Button
+            variation="primary"
+            size="medium"
+            onClick={() => navigate(`/checkin/${booking?.id}`)}
+          >
+            Check in
+          </Button>
+        )}
+
         <Button variation="secondary" size="medium" onClick={moveBack}>
           Back
         </Button>

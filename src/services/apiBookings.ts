@@ -57,6 +57,8 @@ export async function getBookings({
     // query = query[filter.method || "eq"](filter.field, filter.value);
 
     const { field, value, method } = filter;
+    console.log(method);
+
     switch (method) {
       case "eq":
         query = query.eq(field, value);
@@ -118,6 +120,7 @@ export async function getBooking(id: number) {
     console.error(error);
     throw new Error("Booking not found");
   }
+  console.log("apiBooking: ", data);
 
   return data;
 }
@@ -176,7 +179,10 @@ export async function getStaysTodayActivity() {
   return data;
 }
 
-export async function updateBooking(id: any, obj: any) {
+export async function updateBooking(
+  id: number,
+  obj: { status: string; isPaid: boolean }
+) {
   const { data, error } = await supabase
     .from("bookings")
     .update(obj)

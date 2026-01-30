@@ -12,6 +12,7 @@ import { Flag } from "../../ui/Flag";
 
 import { formatDistanceFromNow, formatCurrency } from "../../utils/helpers";
 
+import type { BookingDetailType } from "../../types/bookingsTypes";
 
 const StyledBookingDataBox = styled.section`
   /* Box */
@@ -103,7 +104,7 @@ const Footer = styled.footer`
 `;
 
 // A purely presentational component
-function BookingDataBox({ booking }: { booking: any }) {
+function BookingDataBox({ booking }: { booking: BookingDetailType }) {
   const {
     created_at,
     startDate,
@@ -111,12 +112,12 @@ function BookingDataBox({ booking }: { booking: any }) {
     numNights,
     numGuests,
     cabinPrice,
-    extrasPrice,
+    extraPrice,
     totalPrice,
     hasBreakfast,
     observations,
     isPaid,
-    guests: { fullName: guestName, email, country, countryFlag, nationalID },
+    guests: { fullName: guestName, email, countryFlag, nationalID },
     cabins: { name: cabinName },
   } = booking;
 
@@ -141,7 +142,9 @@ function BookingDataBox({ booking }: { booking: any }) {
 
       <Section>
         <Guest>
-          {countryFlag && <Flag src={countryFlag} alt={`Flag of ${country}`} />}
+          {countryFlag && (
+            <Flag src={countryFlag} alt={`Flag of ${countryFlag}`} />
+          )}
           <p>
             {guestName} {numGuests > 1 ? `+ ${numGuests - 1} guests` : ""}
           </p>
@@ -170,7 +173,7 @@ function BookingDataBox({ booking }: { booking: any }) {
 
             {hasBreakfast &&
               ` (${formatCurrency(cabinPrice)} cabin + ${formatCurrency(
-                extrasPrice
+                extraPrice
               )} breakfast)`}
           </DataItem>
 

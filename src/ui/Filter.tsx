@@ -53,6 +53,7 @@ export default function Filter({ filterField, options }: FilterProps) {
 
   function handleClick(value: string) {
     searchParams.set(filterField, value);
+    searchParams.set("page", "1");
     setSearchParams(searchParams);
   }
 
