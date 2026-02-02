@@ -1,16 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
+import { useMoveBack } from "../../hooks/useMoveBack";
+import { useBooking } from "./useBooking";
+import { useCheckOut } from "../check-in-out/useCheckout";
+
 import BookingDataBox from "./BookingDataBox";
 import Row from "../../ui/Row";
-import Heading from "../../ui/Heading";
 import Tag from "../../ui/Tag";
 import ButtonGroup from "../../ui/ButtonGroup";
 import Button from "../../ui/Button";
 import ButtonText from "../../ui/ButtonText";
-
-import { useMoveBack } from "../../hooks/useMoveBack";
-import { useBooking } from "./useBooking";
 import Spinner from "../../ui/Spinner";
 
 const HeadingGroup = styled.div`
@@ -23,20 +23,18 @@ type StatusKey = "unconfirmed" | "checked-in" | "checked-out";
 
 function BookingDetail() {
   const { isLoading, booking } = useBooking();
+  const { checkout, isCheckingOut } = useCheckOut();
   const navigate = useNavigate();
-  // const { status, id: bookingId } = booking;
-
   const moveBack = useMoveBack();
-
-  if (isLoading) return <Spinner />;
-  console.log(booking);
-  console.log(booking.status);
+  // const { status, id: bookingId } = booking;
 
   const statusToTagName = {
     unconfirmed: "blue",
     "checked-in": "green",
     "checked-out": "silver",
   };
+
+  if (isLoading) return <Spinner />;
 
   return (
     <>
@@ -60,6 +58,17 @@ function BookingDetail() {
             onClick={() => navigate(`/checkin/${booking?.id}`)}
           >
             Check in
+          </Button>
+        )}
+
+        {booking?.status === "checked-in" && (
+          <Button
+            variation="primary"
+            size="medium"
+            onClick={() => checkout(booking?.id)}
+            disabled={isCheckingOut}
+          >
+            Check out
           </Button>
         )}
 
