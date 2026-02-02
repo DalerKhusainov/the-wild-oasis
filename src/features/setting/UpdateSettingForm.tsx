@@ -1,6 +1,6 @@
 import type { FocusEvent } from "react";
 import type { SettingFormType } from "../../types/settingsTypes";
-import { useFetchSettings } from "./useFetchSettings";
+import { useSettings } from "./useSettings";
 import { useUpdateSetting } from "./useUpdateSetting";
 
 import Form from "../../ui/Form";
@@ -17,7 +17,7 @@ function UpdateSettingsForm() {
       maxGuestsPerBooking,
       breakfastPrice,
     } = {},
-  } = useFetchSettings();
+  } = useSettings();
 
   const { isUpdating, updateSetting } = useUpdateSetting();
 

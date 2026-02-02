@@ -181,7 +181,16 @@ export async function getStaysTodayActivity() {
 
 export async function updateBooking(
   id: number,
-  obj: { status: string; isPaid: boolean }
+  obj:
+    | {
+        status: string;
+        isPaid: boolean;
+        hasBreakfast: boolean;
+        extraPrice: number;
+        totalPrice: number;
+      }
+    | { status: string; isPaid: boolean }
+    | { status: string }
 ) {
   const { data, error } = await supabase
     .from("bookings")

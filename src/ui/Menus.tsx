@@ -34,6 +34,7 @@ interface StyledListProps {
 interface ButtonProps {
   children: ReactNode;
   icon: ReactElement;
+  disabled?: boolean;
   onClick?: () => void;
 }
 
@@ -168,7 +169,7 @@ function List({ id, children }: { id: number; children: ReactNode }) {
   );
 }
 
-function Button({ children, icon, onClick }: ButtonProps) {
+function Button({ children, icon, onClick, disabled }: ButtonProps) {
   const { closeMenus } = useMenus();
 
   function handleClick() {
@@ -178,7 +179,7 @@ function Button({ children, icon, onClick }: ButtonProps) {
 
   return (
     <li>
-      <StyledButton onClick={handleClick}>
+      <StyledButton onClick={handleClick} disabled={disabled}>
         {icon}
         <span>{children}</span>
       </StyledButton>
