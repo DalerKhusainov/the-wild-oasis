@@ -203,10 +203,11 @@ export async function updateBooking(
     console.error(error);
     throw new Error("Booking could not be updated");
   }
+
   return data;
 }
 
-export async function deleteBooking(id: any) {
+export async function deleteBooking(id: number) {
   // REMEMBER RLS POLICIES
   const { data, error } = await supabase.from("bookings").delete().eq("id", id);
 
