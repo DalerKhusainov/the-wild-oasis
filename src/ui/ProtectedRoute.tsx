@@ -31,9 +31,6 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
       </FullPage>
     );
 
-  console.log(!isAuthenticated, !isLoading);
-  console.log(isAuthenticated);
-
   // 4. If there IS a user, render the app
   if (isAuthenticated) return children;
 }
