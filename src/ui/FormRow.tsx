@@ -30,6 +30,7 @@ const StyledFormRow = styled.div`
 
 const Label = styled.label`
   font-weight: 500;
+  align-self: flex-start;
 `;
 
 const Error = styled.span`
