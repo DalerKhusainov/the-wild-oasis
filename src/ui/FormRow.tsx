@@ -1,4 +1,5 @@
 import type { ReactElement, InputHTMLAttributes } from "react";
+import { FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
 import { styled } from "styled-components";
 
 const StyledFormRow = styled.div`
@@ -38,11 +39,17 @@ const Error = styled.span`
   color: var(--color-red-700);
 `;
 
+type ErrorType =
+  | string
+  | FieldError
+  | Merge<FieldError, FieldErrorsImpl<any>>
+  | undefined;
+
 interface FormRowProps {
   //   register: UseFormRegister<AddCabinFormInputsTypes>;
   children: ReactElement<InputHTMLAttributes<HTMLInputElement>>;
   label?: string;
-  error?: string | undefined;
+  error?: ErrorType;
 }
 
 export default function FormRow({ children, label, error }: FormRowProps) {
@@ -50,7 +57,7 @@ export default function FormRow({ children, label, error }: FormRowProps) {
     <StyledFormRow>
       {label && <Label htmlFor={children?.props?.id}>{label}</Label>}
       {children}
-      {error && <Error>{error}</Error>}
+      {error && <Error>{String(error)}</Error>}
     </StyledFormRow>
   );
 }
