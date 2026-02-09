@@ -1,9 +1,11 @@
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useSignup } from "./useSignup";
 
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
+import SpinnerMini from "../../ui/SpinnerMini";
 
 // Email regex: /\S+@\S+\.\S+/
 
@@ -19,6 +21,7 @@ function SignupForm() {
     register,
     getValues,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<AddUserFormInputsTypes>({
     defaultValues: {
@@ -29,8 +32,11 @@ function SignupForm() {
     },
   });
 
+  const { signup, isSigningup } = useSignup();
+
   const onSubmit: SubmitHandler<AddUserFormInputsTypes> = (data) => {
-    console.log(data);
+    const { fullName, email, password } = data;
+    signup({ fullName, email, password }, { onSettled: () => reset() });
   };
 
   return (
@@ -39,6 +45,7 @@ function SignupForm() {
         <Input
           type="text"
           id="fullName"
+          disabled={isSigningup}
           {...register("fullName", { required: "This field is required" })}
         />
       </FormRow>
@@ -47,6 +54,7 @@ function SignupForm() {
         <Input
           type="email"
           id="email"
+          disabled={isSigningup}
           {...register("email", {
             required: "This field is required",
             pattern: {
@@ -64,6 +72,7 @@ function SignupForm() {
         <Input
           type="password"
           id="password"
+          disabled={isSigningup}
           {...register("password", {
             required: "This field is required",
             minLength: {
@@ -78,6 +87,7 @@ function SignupForm() {
         <Input
           type="password"
           id="passwordConfirm"
+          disabled={isSigningup}
           {...register("passwordConfirm", {
             required: "This field is required",
             validate: (value) =>
@@ -89,11 +99,16 @@ function SignupForm() {
       <FormRow>
         <>
           {/* type is an HTML attribute! */}
-          <Button variation="secondary" size="medium" type="reset">
+          <Button
+            variation="secondary"
+            size="medium"
+            type="reset"
+            disabled={isSigningup}
+          >
             Cancel
           </Button>
-          <Button variation="primary" size="medium">
-            Create new user
+          <Button variation="primary" size="medium" disabled={isSigningup}>
+            {!isSigningup ? "Create new user" : <SpinnerMini />}
           </Button>
         </>
       </FormRow>
