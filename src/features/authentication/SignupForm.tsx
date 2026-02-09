@@ -104,6 +104,7 @@ function SignupForm() {
             size="medium"
             type="reset"
             disabled={isSigningup}
+            onClick={() => reset()}
           >
             Cancel
           </Button>

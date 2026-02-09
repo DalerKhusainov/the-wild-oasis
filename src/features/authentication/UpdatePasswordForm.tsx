@@ -1,25 +1,33 @@
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
+
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
+import SpinnerMini from "../../ui/SpinnerMini";
 
 import { useUpdateUser } from "./useUpdateUser";
 
+interface UpdatePasswordFormType {
+  password: string;
+  passwordConfirm: string;
+}
+
 function UpdatePasswordForm() {
-  const { register, handleSubmit, formState, getValues, reset } = useForm();
+  const { register, handleSubmit, formState, getValues, reset } =
+    useForm<UpdatePasswordFormType>();
   const { errors } = formState;
 
   const { updateUser, isUpdating } = useUpdateUser();
 
-  function onSubmit({ password }) {
-    updateUser({ password }, { onSuccess: reset });
-  }
+  const onSubmit: SubmitHandler<UpdatePasswordFormType> = ({ password }) => {
+    updateUser({ password }, { onSuccess: () => reset() });
+  };
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <FormRow
-        label="Password (min 8 characters)"
+        label="New password (min 8 chars)"
         error={errors?.password?.message}
       >
         <Input
@@ -54,10 +62,19 @@ function UpdatePasswordForm() {
         />
       </FormRow>
       <FormRow>
-        <Button onClick={reset} type="reset" variation="secondary">
-          Cancel
-        </Button>
-        <Button disabled={isUpdating}>Update password</Button>
+        <>
+          <Button
+            onClick={() => reset()}
+            type="reset"
+            variation="secondary"
+            size="medium"
+          >
+            Cancel
+          </Button>
+          <Button variation="primary" size="medium" disabled={isUpdating}>
+            {!isUpdating ? "Update password" : <SpinnerMini />}
+          </Button>
+        </>
       </FormRow>
     </Form>
   );

@@ -1,38 +1,58 @@
-import { useState } from "react";
+import { useState, type FormEvent, ChangeEvent } from "react";
 
 import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
+import SpinnerMini from "../../ui/SpinnerMini";
 
 import { useUser } from "./useUser";
+import { useUpdateUser } from "./useUpdateUser";
 
 function UpdateUserDataForm() {
-  // We don't need the loading state, and can immediately use the user data, because we know that it has already been loaded at this point
-  const {
-    user: {
-      email,
-      user_metadata: { fullName: currentFullName },
-    },
-  } = useUser();
+  const { user } = useUser();
+  const { updateUser, isUpdating } = useUpdateUser();
+  const currentFullName = user?.user_metadata?.fullName || "";
+  const userEmail = user?.email || "";
 
-  const [fullName, setFullName] = useState(currentFullName);
-  const [avatar, setAvatar] = useState(null);
+  const [fullName, setFullName] = useState<string>(currentFullName);
+  const [avatar, setAvatar] = useState<File | null>(null);
 
-  function handleSubmit(e) {
+  function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0] || null;
+    setAvatar(file);
+  }
+
+  function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (!fullName) return;
+    updateUser(
+      { fullName, avatar },
+      {
+        onSuccess: () => {
+          setFullName(currentFullName);
+          setAvatar(null);
+        },
+      }
+    );
+  }
+
+  function handleCancel() {
+    setFullName(currentFullName);
+    setAvatar(null);
   }
 
   return (
     <Form onSubmit={handleSubmit}>
       <FormRow label="Email address">
-        <Input value={email} disabled />
+        <Input value={userEmail} disabled />
       </FormRow>
       <FormRow label="Full name">
         <Input
           type="text"
           value={fullName}
+          disabled={isUpdating}
           onChange={(e) => setFullName(e.target.value)}
           id="fullName"
         />
@@ -41,14 +61,25 @@ function UpdateUserDataForm() {
         <FileInput
           id="avatar"
           accept="image/*"
-          onChange={(e) => setAvatar(e.target.files[0])}
+          disabled={isUpdating}
+          onChange={handleAvatarChange}
         />
       </FormRow>
       <FormRow>
-        <Button type="reset" variation="secondary">
-          Cancel
-        </Button>
-        <Button>Update account</Button>
+        <>
+          <Button
+            type="reset"
+            variation="secondary"
+            size="medium"
+            disabled={isUpdating}
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
+          <Button variation="primary" size="medium" disabled={isUpdating}>
+            {!isUpdating ? "Update account" : <SpinnerMini />}
+          </Button>
+        </>
       </FormRow>
     </Form>
   );
