@@ -30,7 +30,7 @@ function UpdateUserDataForm() {
     updateUser(
       { fullName, avatar },
       {
-        onSuccess: () => {
+        onSettled: () => {
           setFullName(currentFullName);
           setAvatar(null);
         },
