@@ -53,3 +53,30 @@ export interface Guests {
   countryFlag: string;
   nationality: string;
 }
+
+export interface BookingsStatsType {
+  created_at: string;
+  totalPrice: number;
+  extraPrice: number;
+}
+
+export interface BookingsConfirmedStaysType {
+  id: number;
+  created_at: string;
+  startDate: string;
+  endDate: string;
+  numNights: number;
+  numGuests: number;
+  cabinPrice: number;
+  extraPrice: number;
+  totalPrice: number;
+  status: string;
+  hasBreakfast: boolean;
+  isPaid: boolean;
+  observations: any;
+  cabinID: number;
+  guestID: number;
+  guests: {
+    fullName: string;
+  };
+}

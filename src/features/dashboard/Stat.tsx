@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import styled from "styled-components";
 
 const StyledStat = styled.div`
@@ -48,9 +49,9 @@ const Value = styled.p`
 `;
 
 interface StatProps {
-  icon: any;
+  icon: ReactElement;
   title: string;
-  value: string;
+  value: string | number;
   color: string;
 }
 
