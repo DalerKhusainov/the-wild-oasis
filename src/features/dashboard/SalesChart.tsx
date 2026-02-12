@@ -64,9 +64,16 @@ function SalesChart({ bookings, numDays }: SalesChartProps) {
         background: "#fff",
       };
 
+  const dateFrom = allDates[0] ? format(allDates[0], "MMM dd yyyy") : "";
+  const dateTo = allDates[allDates.length - 1]
+    ? format(allDates[allDates.length - 1], "MMM dd yyyy")
+    : "";
+
   return (
     <StyledSalesChart>
-      <Heading as="h3">Sales</Heading>
+      <Heading as="h3">
+        Sales from {dateFrom} &mdash; {dateTo}
+      </Heading>
 
       <ResponsiveContainer height={300} width="100%">
         <AreaChart data={data}>

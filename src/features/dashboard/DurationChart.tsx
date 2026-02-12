@@ -1,4 +1,17 @@
 import styled from "styled-components";
+import type { BookingsConfirmedStaysType } from "../../types/bookingsTypes";
+import {
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
+
+import Heading from "../../ui/Heading";
+
+import { useDarkMode } from "../../context/DarkModeContext";
 
 const ChartBox = styled.div`
   /* Box */
@@ -104,17 +117,17 @@ const startDataDark = [
   },
 ];
 
-function prepareData(startData, stays) {
+function prepareData(startData: any, stays: any) {
   // A bit ugly code, but sometimes this is what it takes when working with real data 😅
 
-  function incArrayValue(arr, field) {
-    return arr.map((obj) =>
+  function incArrayValue(arr: any, field: any) {
+    return arr.map((obj: any) =>
       obj.duration === field ? { ...obj, value: obj.value + 1 } : obj
     );
   }
 
   const data = stays
-    .reduce((arr, cur) => {
+    .reduce((arr: any, cur: any) => {
       const num = cur.numNights;
       if (num === 1) return incArrayValue(arr, "1 night");
       if (num === 2) return incArrayValue(arr, "2 nights");
@@ -126,7 +139,72 @@ function prepareData(startData, stays) {
       if (num >= 21) return incArrayValue(arr, "21+ nights");
       return arr;
     }, startData)
-    .filter((obj) => obj.value > 0);
+    .filter((obj: any) => obj.value > 0);
 
   return data;
 }
+
+interface StartDataType {
+  duration: string;
+  value: number;
+  color: string;
+}
+interface DurationChartProps {
+  confirmedStays: BookingsConfirmedStaysType[] | undefined;
+}
+
+function DurationChart({ confirmedStays }: DurationChartProps) {
+  const { isDarkMode } = useDarkMode();
+
+  const startData = isDarkMode ? startDataDark : startDataLight;
+  const data: StartDataType[] = confirmedStays
+    ? prepareData(startData, confirmedStays)
+    : [];
+  // console.log(data.length >= 0 && "Data is empty");
+  // console.log(data);
+
+  return (
+    <ChartBox>
+      <Heading as="h2">Stay duration summary</Heading>
+
+      {data.length >= 0 && (
+        <ResponsiveContainer width="100%" height={240}>
+          <PieChart>
+            <Pie
+              data={data}
+              nameKey="duration"
+              // dataKey="duration"
+              dataKey="value"
+              innerRadius={85}
+              outerRadius={110}
+              cx="40%"
+              cy="50%"
+              paddingAngle={3}
+            >
+              {data?.map((entry) => (
+                <Cell
+                  fill={entry.color}
+                  stroke={entry.color}
+                  key={entry.duration}
+                />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend
+              verticalAlign="middle"
+              align="right"
+              width={130}
+              layout="vertical"
+              iconSize={15}
+              iconType="circle"
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      )}
+
+      {data.length <= 0 && <span>There are no stays on these dates</span>}
+    </ChartBox>
+  );
+}
+
+export default DurationChart;
