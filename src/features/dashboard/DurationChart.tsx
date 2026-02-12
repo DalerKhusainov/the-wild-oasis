@@ -160,8 +160,6 @@ function DurationChart({ confirmedStays }: DurationChartProps) {
   const data: StartDataType[] = confirmedStays
     ? prepareData(startData, confirmedStays)
     : [];
-  // console.log(data.length >= 0 && "Data is empty");
-  // console.log(data);
 
   return (
     <ChartBox>
@@ -173,7 +171,6 @@ function DurationChart({ confirmedStays }: DurationChartProps) {
             <Pie
               data={data}
               nameKey="duration"
-              // dataKey="duration"
               dataKey="value"
               innerRadius={85}
               outerRadius={110}
