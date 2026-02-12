@@ -80,3 +80,26 @@ export interface BookingsConfirmedStaysType {
     fullName: string;
   };
 }
+
+export interface TodayActivityType {
+  id: number;
+  created_at: string;
+  startDate: string;
+  endDate: string;
+  numNights: number;
+  numGuests: number;
+  cabinPrice: number;
+  extraPrice: number;
+  totalPrice: number;
+  status: string;
+  hasBreakfast: boolean;
+  isPaid: boolean;
+  observations: any;
+  cabinID: number;
+  guestID: number;
+  guests: {
+    fullName: string;
+    countryFlag: string;
+    nationality: string;
+  };
+}

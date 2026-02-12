@@ -1,4 +1,4 @@
-import { getToday } from "../utils/helpers";
+import { getToday, getTodayRange } from "../utils/helpers";
 import supabase from "./supabase";
 import type { BookingsFromApiType } from "../types/bookingsTypes";
 import { PAGE_SIZE } from "../utils/constants";
@@ -177,6 +177,67 @@ export async function getStaysTodayActivity() {
     throw new Error("Bookings could not get loaded");
   }
   return data;
+}
+
+export async function getStaysTodayActivityV2() {
+  const startOfDay = getTodayRange().start;
+  const endOfDay = getTodayRange().end;
+
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*, guests(fullName, nationality, countryFlag)")
+    .or(
+      `and(status.eq.unconfirmed,startDate.gte.${startOfDay},startDate.lte.${endOfDay}),` +
+        `and(status.eq.checked-in,endDate.gte.${startOfDay},endDate.lte.${endOfDay})`
+    )
+    .order("created_at");
+
+  if (error) {
+    console.error(error);
+    throw new Error("Bookings could not get loaded");
+  }
+  return data;
+}
+
+export async function getStaysTodayActivityV3() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+
+  const startOfDay = `${year}-${month}-${day} 00:00:00`;
+  const endOfDay = `${year}-${month}-${day} 23:59:59`;
+
+  // Получаем unconfirmed бронирования на сегодня
+  const { data: unconfirmed, error: error1 } = await supabase
+    .from("bookings")
+    .select("*, guests(fullName, nationality, countryFlag)")
+    .eq("status", "unconfirmed")
+    .gte("startDate", startOfDay)
+    .lte("startDate", endOfDay)
+    .order("created_at");
+
+  if (error1) {
+    console.error(error1);
+    throw new Error("Bookings could not get loaded");
+  }
+
+  // Получаем checked-in бронирования на сегодня
+  const { data: checkedIn, error: error2 } = await supabase
+    .from("bookings")
+    .select("*, guests(fullName, nationality, countryFlag)")
+    .eq("status", "checked-in")
+    .gte("endDate", startOfDay)
+    .lte("endDate", endOfDay)
+    .order("created_at");
+
+  if (error2) {
+    console.error(error2);
+    throw new Error("Bookings could not get loaded");
+  }
+
+  // Объединяем результаты
+  return [...unconfirmed, ...checkedIn];
 }
 
 export async function updateBooking(
