@@ -6,6 +6,7 @@ import {
   useContext,
   useState,
   ReactElement,
+  useRef,
 } from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
@@ -129,8 +130,18 @@ function Menus({ children }: MenusProps) {
 
 function Toggle({ id }: { id: number }) {
   const { openId, closeMenus, openMenus, getPosition } = useMenus();
+  const isClosing = useRef(false);
 
   function handleClick(e: MouseEvent<HTMLElement>) {
+    e.stopPropagation();
+    console.log("=== Toggle clicked ===");
+    console.log("Before toggle:", { openId, id });
+
+    if (isClosing.current) {
+      isClosing.current = false;
+      return;
+    }
+
     const target = e.target as HTMLElement;
     const button = target.closest("button");
     if (!button) return;
@@ -141,7 +152,25 @@ function Toggle({ id }: { id: number }) {
 
     getPosition(positionX, positionY);
 
-    openId === null || openId !== id ? openMenus(id) : closeMenus();
+    // openId === null || openId !== id ? openMenus(id) : closeMenus();
+
+    if (openId === null || openId !== id) {
+      console.log("Opening menu:", id);
+      openMenus(id);
+    } else {
+      isClosing.current = true;
+      console.log("Closing menu:", id);
+      closeMenus();
+      // getPosition(0, 0);
+
+      setTimeout(() => {
+        isClosing.current = false;
+      }, 100);
+    }
+
+    console.log("After toggle:", {
+      openId: openId === id ? "will close" : "will open",
+    });
   }
 
   return (
@@ -153,10 +182,20 @@ function Toggle({ id }: { id: number }) {
 
 function List({ id, children }: { id: number; children: ReactNode }) {
   const { openId, position, closeMenus } = useMenus();
+  const isOpen = openId === id;
 
-  const listRef = useCloseOnEscapeAndOutsideClick(closeMenus);
+  console.log("List render:", { id, openId, isOpen: openId === id });
 
-  if (openId !== id) return null;
+  const listRef = useCloseOnEscapeAndOutsideClick(closeMenus, isOpen);
+
+  // const ref = useRef<HTMLUListElement>(null); // просто ref без хука
+
+  if (openId !== id) {
+    console.log("List not rendered for id:", id);
+    return null;
+  }
+
+  console.log("List rendered for id:", id);
 
   return createPortal(
     <StyledList
