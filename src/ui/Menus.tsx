@@ -134,8 +134,6 @@ function Toggle({ id }: { id: number }) {
 
   function handleClick(e: MouseEvent<HTMLElement>) {
     e.stopPropagation();
-    console.log("=== Toggle clicked ===");
-    console.log("Before toggle:", { openId, id });
 
     if (isClosing.current) {
       isClosing.current = false;
@@ -152,25 +150,16 @@ function Toggle({ id }: { id: number }) {
 
     getPosition(positionX, positionY);
 
-    // openId === null || openId !== id ? openMenus(id) : closeMenus();
-
     if (openId === null || openId !== id) {
-      console.log("Opening menu:", id);
       openMenus(id);
     } else {
       isClosing.current = true;
-      console.log("Closing menu:", id);
       closeMenus();
-      // getPosition(0, 0);
 
       setTimeout(() => {
         isClosing.current = false;
       }, 100);
     }
-
-    console.log("After toggle:", {
-      openId: openId === id ? "will close" : "will open",
-    });
   }
 
   return (
@@ -188,14 +177,9 @@ function List({ id, children }: { id: number; children: ReactNode }) {
 
   const listRef = useCloseOnEscapeAndOutsideClick(closeMenus, isOpen);
 
-  // const ref = useRef<HTMLUListElement>(null); // просто ref без хука
-
   if (openId !== id) {
-    console.log("List not rendered for id:", id);
     return null;
   }
-
-  console.log("List rendered for id:", id);
 
   return createPortal(
     <StyledList

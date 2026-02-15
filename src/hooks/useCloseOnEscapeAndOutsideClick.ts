@@ -53,18 +53,15 @@ import { useEffect, useRef } from "react";
 
 export function useCloseOnEscapeAndOutsideClick(
   handler: () => void,
-  isOpen: boolean // добавили параметр
+  isOpen: boolean = true // добавили параметр
 ) {
   const ref = useRef<HTMLDivElement | HTMLUListElement>(null);
 
   useEffect(() => {
     if (!isOpen) return; // не добавляем обработчики, если меню закрыто
 
-    console.log("Adding event listeners");
-
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
-        console.log("Escape - closing");
         handler();
       }
     }
@@ -75,20 +72,13 @@ export function useCloseOnEscapeAndOutsideClick(
       // Проверяем, не является ли цель кнопкой-переключателем
       const isToggleButton = (target as HTMLElement).closest?.("button");
 
-      console.log("Click outside check:", {
-        isToggleButton: !!isToggleButton,
-        contains: ref.current?.contains(target),
-      });
-
       // Если клик на кнопке - игнорируем
       if (isToggleButton) {
-        console.log("Click on button - ignoring");
         return;
       }
 
       // Если клик вне списка - закрываем
       if (ref.current && !ref.current.contains(target)) {
-        console.log("Click outside list - closing");
         handler();
       }
     }
@@ -98,7 +88,6 @@ export function useCloseOnEscapeAndOutsideClick(
     document.addEventListener("mousedown", handleClickOutside, true);
 
     return () => {
-      console.log("Removing event listeners");
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("mousedown", handleClickOutside, true);
     };
